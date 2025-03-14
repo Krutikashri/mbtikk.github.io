@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MBTI Personality Quiz</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .form-section {
+            margin-bottom: 30px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        input[type="text"], 
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .question {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            display: none;
+        }
+        .options {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .option-label {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+        }
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        #results {
+            display: none;
+            text-align: center;
+        }
+        .mbti-type {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 20px 0;
+        }
+        .type-description {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f0f7ff;
+            border-radius: 8px;
+            text-align: left;
+        }
+        #p5-container {
+            width: 100%;
+            height: 300px;
+            margin: 20px 0;
+        }
+        .progress-bar {
+            width: 100%;
+            background-color: #eee;
+            border-radius: 10px;
+            margin: 10px 0;
+            position: relative;
+        }
+        .progress {
+            background-color: #3498db;
+            height: 10px;
+            border-radius: 10px;
+            transition: width 0.5s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>MBTI Personality Quiz</h1>
+        
+        <!-- User Info Section -->
+        <div id="user-info" class="form-section">
+            <h2>Tell us about yourself</h2>
+            <label for="name">Your Name:</label>
+            <input type="text" id="name" placeholder="Enter your name">
+            
+            <label for="age">Your Age:</label>
+            <input type="number" id="age" placeholder="Enter your age" min="10" max="120">
+            
+            <label for="city">Your City:</label>
+            <input type="text" id="city" placeholder="Enter your city">
+            
+            <label for="goals">Your Goals or Aspirations:</label>
+            <input type="text" id="goals" placeholder="What are your main goals in life?">
+            
+            <div class="button-container">
+                <button id="start-quiz">Start Quiz</button>
+            </div>
+        </div>
+        
+        <!-- Quiz Questions Section -->
+        <div id="quiz-container" style="display: none;">
+            <div class="progress-bar">
+                <div id="quiz-progress" class="progress" style="width: 0%"></div>
+            </div>
+            <h2>MBTI Personality Questions</h2>
+            
+            <!-- Question 1: E vs I -->
+            <div class="question" id="q1">
+                <p>1. How do you typically recharge after a long day?</p>
+                <div class="options">
+                    <div>
+                        <div class="option-label">
+                            <input type="radio" name="q1" value="E" id="q1a">
+                            <label for="q1a">Spending time with others energizes me</label>
+                        </div>
+                        <div class="option-label">
+                            <input type="radio" name="q1" value="E" id="q1b">
+                            <label for="q1b">I prefer group activities over solo ones</label>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="option-label">
+                            <input type="radio" name="q1" value="I" id="q1c">
+                            <label for="q1c">I need alone time to recharge</label>
+                        </div>
+                        <div class="option-label">
+                            <input type="radio" name="q1" value="I" id="q1d">
+                            <label for="q1d">I prefer deep one-on-one conversations</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 2: S vs N -->
+            <div class="question" id="q2">
+                <p>2. When solving problems, you tend to:</p>
+                <div class="options">
+                    <div>
+                        <div class="option-label">
+                            <input type="radio" name="q2" value="S" id="q2a">
+                            <label for="q2a">Focus on concrete facts and details</label>
+                        </div>
+                        <div class="option-label">
+                            <input type="radio" name="q2" value="S" id="q2b">
+                            <label for="q2b">Rely on past experiences and proven methods</label>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="option-label">
+                            <input type="radio" name="q2" value="N" id="q2c">
+                            <label for="q2c">Look for patterns and possibilities</label>
+                        </div>
+                        <div class="option-label">
+                            <input type="radio" name="q2" value="N" id="q2d">
+                            <label for="q2d">Think about future implications and big picture</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 3: T vs F -->
+            <div class="question" id="q3">
+                <p>3. When making important decisions, you primarily consider:</p>
+                <div class="options">
+                    <div>
+                        <div class="option-label">
+                            <input type="radio" name="q3" value="T" id="q3a">
+                            <label for="q3a">Logical analysis and objective criteria</label>
+                        </div>
+                        <div class="option-label">
+                            <input type="radio" name="q3" value="T" id="q3b">
+                            <label for="q3b">Pros and cons with minimal emotional influence</label>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="option-label">
+                            <input type="radio" name="q3" value="F" id="q3c">
+                            <label for="q3c">How it affects people and their feelings</label>
+                        </div>
+                        <div class="option-label">
+                            <input type="radio" name="q3" value="F" id="q3d">
+                            <label for="q3d">Personal values and how it aligns with them</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 4: J vs P -->
+            <div class="question" id="q4">
+                <p>4. How do you approach deadlines and planning?</p>
+                <div class="options">
+                    <div>
+                        <div class="option-label">
+                            <input type="radio" name="q4" value="J" id="q4a">
+                            <label for="q4a">I prefer having clear plans and schedules</label>
+                        </div>
+                        <div class="option-label">
+                            <input type="radio" name="q4" value="J" id="q4b">
+                            <label for="q4b">I like to finish tasks well before deadlines</label>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="option-label">
+                            <input type="radio" name="q4" value="P" id="q4c">
+                            <label for="q4c">I work best when I can be flexible with my schedule</label>
+                        </div>
+                        <div class="option-label">
+                            <input type="radio" name="q4" value="P" id="q4d">
+                            <label for="q4d">I often complete tasks close to deadlines</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 5: E vs I -->
+            <div class="question" id="q5">
+                <p>5. In social situations, you usually:</p>
+                <div class="options">
+                    <div>
+                        <div class="option-label">
+                            <input type="radio" name="q5" value="E" id="q5a">
+                            <label for="q5a">Engage with many people and initiate conversations</label>
+                        </div>
+                        <div class="option-label">
+                            <input type="radio" name="q5" value="E" id="q5b">
+                            <label for="q5b">Feel energized by being in social environments</label>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="option-label">
+                            <input type="radio" name="q5" value="I" id="q5c">
+                            <label for="q5c">Prefer talking to a few close friends</label>
+                        </div>
+                        <div class="option-label">
+                            <input type="radio" name="q5" value="I" id="q5d">
+                            <label for="q5d">Need time to think before sharing your thoughts</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 6: S vs N -->
+            <div class="question" id="q6">
+                <p>6. You are more interested in:</p>
+                <div class="options">
+                    <div>
+                        <div class="option-label">
+                            <input type="radio" name="q6" value="S" id="q6a">
+                            <label for="q6a">Practical applications of ideas</label>
+                        </div>
+                        <div class="option-label">
+                            <input type="radio" name="q6" value="S" id="q6b">
+                            <label for="q6b">The concrete details of a situation</label>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="option-label">
+                            <input type="radio" name="q6" value="N" id="q6c">
+                            <label for="q6c">Exploring abstract concepts and theories</label>
+                        </div>
+                        <div class="option-label">
+                            <input type="radio" name="q6" value="N" id="q6d">
+                            <label for="q6d">Thinking about what could be rather than what is</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 7: T vs F -->
+            <div class="question" id="q7">
+                <p>7. When giving feedback to others, you tend to be:</p>
+                <div class="options">
+                    <div>
+                        <div class="option-label">
+                            <input type="radio" name="q7" value="T" id="q7a">
+                            <label for="q7a">Direct and straightforward about issues</label>
+                        </div>
+                        <div class="option-label">
+                            <input type="radio" name="q7" value="T" id="q7b">
+                            <label for="q7b">Focused on efficiency and objective improvement</label>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="option-label">
+                            <input type="radio" name="q7" value="F" id="q7c">
+                            <label for="q7c">Careful about how your words might affect them</label>
+                        </div>
+                        <div class="option-label">
+                            <input type="radio" name="q7" value="F" id="q7d">
+                            <label for="q7d">Encouraging and supportive even when critical</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 8: J vs P -->
+            <div class="question" id="q8">
+                <p>8. Your living/working space is typically:</p>
+                <div class="options">
+                    <div>
+                        <div class="option-label">
+                            <input type="radio" name="q8" value="J" id="q8a">
+                            <label for="q8a">Well-organized with everything in its place</label>
+                        </div>
+                        <div class="option-label">
+                            <input type="radio" name="q8" value="J" id="q8b">
+                            <label for="q8b">Structured with a system for organization</label>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="option-label">
+                            <input type="radio" name="q8" value="P" id="q8c">
+                            <label for="q8c">Flexible and adaptable to current needs</label>
+                        </div>
+                        <div class="option-label">
+                            <input type="radio" name="q8" value="P" id="q8d">
+                            <label for="q8d">Creative with some degree of organized chaos</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="button-container">
+                <button id="prev-btn" style="display: none;">Previous</button>
+                <button i
